@@ -82,7 +82,33 @@ Your OMRChecker now has a modern web interface! You can now:
 
 ## 💡 Using the Web Interface
 
-1. **Create Your Configuration (NEW! - UI Builders):**
+### 🌟 Smart Detection Mode (NEW! - AI-Powered)
+
+The easiest way to get started:
+
+1. **Upload a Sample OMR Sheet:**
+   - Click "Start Smart Detection" on the home page
+   - Upload ONE clear OMR sheet image
+   - AI automatically detects bubbles, questions, and layout
+
+2. **Review Detection Results:**
+   - See detected layout with marked bubbles
+   - View number of questions and options detected
+   - Edit template if needed or export for later use
+
+3. **Enter Answer Key:**
+   - Simply select correct answers for each question
+   - Save template and answer key for batch processing
+   - Return to main page with everything ready!
+
+4. **Batch Process:**
+   - Upload all your OMR sheets
+   - Saved template and answers are automatically used
+   - Process and download results
+
+### 🔧 Manual Mode
+
+1. **Create Your Configuration (UI Builders):**
    - **Template Builder**: Click "Template Builder" to visually create your OMR sheet layout
      - Define field blocks for questions
      - Set bubble positions and dimensions
@@ -180,6 +206,10 @@ OMRChecker/
 
 ## ✨ Features
 
+✅ **🌟 Smart OMR Detection (AI-Powered)** - Upload one sheet, AI detects everything automatically!
+✅ **Auto Template Generation** - No manual configuration needed
+✅ **Quick Answer Entry** - Just select correct answers, we handle the rest
+✅ **Save for Batch Processing** - Create template once, use for all sheets
 ✅ **Visual Template Builder** - Create OMR layouts without writing JSON
 ✅ **Config Builder** - Configure processing settings with a UI
 ✅ **Answer Key Builder** - Create evaluation criteria visually
@@ -192,4 +222,4 @@ OMRChecker/
 ✅ Error handling and validation
 ✅ Save & reuse configurations
 
-Enjoy your new OMRChecker web interface with complete UI builders! 🚀
+Enjoy your new OMRChecker web interface with AI-powered Smart Detection! 🚀✨

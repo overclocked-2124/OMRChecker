@@ -1,6 +1,33 @@
 import axios from 'axios'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const DEFAULT_BASE_URL = 'http://localhost:8000'
+
+const rawBaseUrl = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_BASE_URL).trim()
+const normalizedBaseUrl = rawBaseUrl.replace(/\/+$/, '')
+const hasApiSuffix = normalizedBaseUrl.toLowerCase().endsWith('/api')
+
+export const SERVER_BASE_URL = hasApiSuffix
+  ? normalizedBaseUrl.slice(0, -4)
+  : normalizedBaseUrl
+
+export const API_BASE_URL = hasApiSuffix
+  ? normalizedBaseUrl
+  : `${normalizedBaseUrl}/api`
+
+const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '')
+const trimLeadingSlash = (value: string) => value.replace(/^\/+/, '')
+
+const joinUrl = (base: string, path = '') => {
+  const sanitizedBase = trimTrailingSlash(base)
+  const sanitizedPath = trimLeadingSlash(path)
+  return sanitizedPath ? `${sanitizedBase}/${sanitizedPath}` : sanitizedBase
+}
+
+export const getServerUrl = (path = '') => joinUrl(SERVER_BASE_URL, path)
+export const getApiUrl = (path = '') => joinUrl(API_BASE_URL, path)
+
+export const getDownloadUrl = (jobId: string, filePath: string) =>
+  getApiUrl(`download/${jobId}/${filePath}`)
 
 export interface ProcessResult {
   status: string
@@ -38,7 +65,7 @@ export async function processOMRSheets(
 
   try {
     const response = await axios.post<ProcessResult>(
-      `${API_BASE_URL}/api/process`,
+      getApiUrl('process'),
       formData,
       {
         headers: {
@@ -62,7 +89,7 @@ export async function processOMRSheets(
 
 export async function cleanupJob(jobId: string): Promise<void> {
   try {
-    await axios.delete(`${API_BASE_URL}/api/cleanup/${jobId}`)
+    await axios.delete(getApiUrl(`cleanup/${jobId}`))
   } catch (error) {
     console.error('Failed to cleanup job:', error)
   }
@@ -70,10 +97,45 @@ export async function cleanupJob(jobId: string): Promise<void> {
 
 export async function listSamples() {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/samples`)
+    const response = await axios.get(getApiUrl('samples'))
     return response.data
   } catch (error) {
     console.error('Failed to list samples:', error)
     return { samples: [] }
+  }
+}
+
+export interface AutoDetectResult {
+  status: string
+  template: any
+  job_id: string
+  marked_image: string
+}
+
+export async function autoDetectTemplate(image: File): Promise<AutoDetectResult> {
+  const formData = new FormData()
+  formData.append('image', image)
+
+  try {
+    const response = await axios.post<AutoDetectResult>(
+      getApiUrl('auto-detect'),
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 60000, // 1 minute timeout
+      }
+    )
+
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(error.response.data.detail || 'Failed to auto-detect template')
+    } else if (error.request) {
+      throw new Error('No response from server. Please check if the API is running.')
+    } else {
+      throw new Error(error.message || 'An unexpected error occurred')
+    }
   }
 }

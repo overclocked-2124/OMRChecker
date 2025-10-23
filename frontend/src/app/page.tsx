@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import UploadSection from '@/components/UploadSection'
 import ResultsSection from '@/components/ResultsSection'
-import { FileUp, CheckCircle2, Layout, Settings, CheckSquare } from 'lucide-react'
+import { FileUp, CheckCircle2, Layout, Settings, CheckSquare, Sparkles } from 'lucide-react'
 
 export default function Home() {
   const [results, setResults] = useState<any>(null)
@@ -54,13 +54,40 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Smart Detection Banner */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-6 mb-8">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-4">
+              <div className="bg-purple-100 rounded-lg p-3">
+                <Sparkles className="w-6 h-6 text-purple-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-purple-900 mb-1">
+                  ✨ Try Smart OMR Detection
+                </h3>
+                <p className="text-sm text-purple-700 mb-3">
+                  Upload one OMR sheet and let AI automatically detect the layout, count questions, 
+                  and create a template. Just enter the answers and save for batch processing!
+                </p>
+                <Link
+                  href="/smart-detect"
+                  className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Start Smart Detection</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Info Banner */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
           <div className="flex items-start space-x-3">
             <FileUp className="w-5 h-5 text-blue-600 mt-0.5" />
             <div className="flex-1">
               <h3 className="text-sm font-medium text-blue-900">
-                How to use OMRChecker
+                Manual Mode: How to use OMRChecker
               </h3>
               <p className="text-sm text-blue-700 mt-1">
                 1. Create your template, config, and answer key using the builders above (or upload existing files)

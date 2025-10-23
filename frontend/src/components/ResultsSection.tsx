@@ -1,6 +1,7 @@
 'use client'
 
 import { Download, FileText, Image as ImageIcon } from 'lucide-react'
+import { getDownloadUrl } from '@/lib/api'
 
 interface ResultsSectionProps {
   results: any
@@ -11,11 +12,12 @@ export default function ResultsSection({
   results,
   isProcessing,
 }: ResultsSectionProps) {
-  const downloadFile = (jobId: string, filePath: string, fileName: string) => {
-    const url = `http://localhost:8000/api/download/${jobId}/${filePath}`
+  const downloadFile = (jobId: string, filePath: string, fileName?: string) => {
+    const url = getDownloadUrl(jobId, filePath)
+    const resolvedName = fileName ?? filePath.split('/').pop() ?? filePath
     const link = document.createElement('a')
     link.href = url
-    link.download = fileName
+    link.download = resolvedName
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -57,19 +59,13 @@ export default function ResultsSection({
                 <FileText className="w-5 h-5 text-blue-600" />
                 <div>
                   <p className="text-sm font-medium text-gray-900">
-                    {results.csv_file}
+                    {results.csv_file.split('/').pop() ?? results.csv_file}
                   </p>
                   <p className="text-xs text-gray-500">Results CSV file</p>
                 </div>
               </div>
               <button
-                onClick={() =>
-                  downloadFile(
-                    results.job_id,
-                    results.csv_file,
-                    results.csv_file.split('/').pop()
-                  )
-                }
+                onClick={() => downloadFile(results.job_id, results.csv_file)}
                 className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Download className="w-4 h-4" />
@@ -93,18 +89,12 @@ export default function ResultsSection({
                   <div className="flex items-center space-x-2">
                     <ImageIcon className="w-4 h-4 text-gray-600" />
                     <p className="text-sm text-gray-700 truncate">
-                      {image.split('/').pop()}
+                      {image.split('/').pop() ?? image}
                     </p>
                   </div>
                 </div>
                 <button
-                  onClick={() =>
-                    downloadFile(
-                      results.job_id,
-                      image,
-                      image.split('/').pop()
-                    )
-                  }
+                  onClick={() => downloadFile(results.job_id, image)}
                   className="w-full bg-gray-200 text-gray-700 px-3 py-2 rounded hover:bg-gray-300 transition-colors text-sm"
                 >
                   Download
